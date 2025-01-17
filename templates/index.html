@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formatted Response</title>
+    <style>
+      #responseContainer {
+        white-space: pre-wrap; /* Preserve whitespace for formatting */
+        font-family: Arial, sans-serif;
+        line-height: 1.5;
+      }
+      .bold {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="showResponseBtn">Show Response</button>
+    <div id="responseContainer"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const responseContainer = document.getElementById("responseContainer");
+        const showResponseBtn = document.getElementById("showResponseBtn");
+
+        // Event listener for button click
+        showResponseBtn.addEventListener("click", () => {
+          responseContainer.innerHTML = ""; // Clear previous response
+
+          // Fetch the response from the Flask backend
+          fetch("/get_response")
+            .then((response) => response.json())
+            .then((data) => {
+              const formattedResponse = data.response;
+              responseContainer.innerHTML = formattedResponse; // Render HTML directly
+            })
+            .catch((error) => console.error("Error fetching response:", error));
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<!-- below is for stream response -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Streamed Response</title>
+    <style>
+      #responseContainer {
+        white-space: pre-wrap; /* Preserve whitespace and formatting */
+        font-family: Arial, sans-serif;
+        line-height: 1.5;
+      }
+      .bold {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="showResponseBtn">Show Response</button>
+    <div id="responseContainer"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const responseContainer = document.getElementById("responseContainer");
+        const showResponseBtn = document.getElementById("showResponseBtn");
+
+        // Event listener for button click
+        showResponseBtn.addEventListener("click", () => {
+          responseContainer.innerHTML = ""; // Clear previous response
+
+          // Fetch the response stream from the Flask backend
+          fetch("/stream_response").then((response) => {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let streamText = "";
+
+            function readStream() {
+              reader.read().then(({ done, value }) => {
+                if (done) {
+                  return; // Stop reading when done
+                }
+                streamText += decoder.decode(value, { stream: true });
+                responseContainer.textContent = streamText; // Append streamed text
+                readStream(); // Continue reading
+              });
+            }
+
+            readStream(); // Start reading the stream
+          });
+        });
+      });
+    </script>
+  </body>
+</html> -->
